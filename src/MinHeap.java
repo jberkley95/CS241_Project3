@@ -1,15 +1,7 @@
 /**
- * <h1>Max Heap Class</h1>
- * MaxHeap implements a Max Heap class with an Array based representation (Default size: 100)
- * <p></p>
- * This Heap Can:
- * <ul>
- * <li>Insert And Remove Values</li>
- * <li>Display All Values in Heap</li>
- * <li>Display Number of Swaps Used During Insertion</li>
- * </ul>
- * <p></p>
- * <b>Note:</b> There are 2 methods of insertion: Sequential and Optimal
+ * <h1>Min Heap</h1>
+ *
+ * MaxHeap implements a Max Heap class with an Array based representation (Default size: 20)
  *
  * @author John Berkley
  *         CPP Class: CS 241
@@ -17,8 +9,8 @@
  */
 
 public class MinHeap {
-    /**integer array containing heap data*/
-    private int[] heapArray;
+    /**HeapNode array containing heap data*/
+    private HeapNode[] heapArray;
     /**current maximum size of the heap*/
     private int maxSize;
     /**current number of items in the heap array*/
@@ -28,22 +20,25 @@ public class MinHeap {
      * Default Constructor. Assigns maxSize to 100, current siz, and number of swaps to 0, and initializes heapArray
      */
     public MinHeap() {
-        maxSize = 100;
+        maxSize = 20;
         currentSize = 0;
-        heapArray = new int[maxSize];
+        heapArray = new HeapNode[maxSize];
     }
 
     /**
      * Inserts a value into the max heap
      *
-     * @param value to be inserted
+     * @param cityNumber to be inserted
+     * @param distToNode to be inserted
      * @return true if inserted properly, false if insert failed
      */
-    public boolean insert(int value) {
+    public boolean insert(int cityNumber, int distToNode) {
         if (currentSize == maxSize) {
             return false;
         }
-        heapArray[currentSize] = value;
+        heapArray[currentSize] = new HeapNode();
+        heapArray[currentSize].cityNumber = cityNumber;
+        heapArray[currentSize].distToNode = distToNode;
         trickleUp(currentSize++);
         return true;
     }
@@ -55,9 +50,9 @@ public class MinHeap {
      */
     private void trickleUp(int index) {
         int parent = (index - 1) / 2;
-        int bottom = heapArray[index];
+        HeapNode bottom = heapArray[index];
 
-        while (index > 0 && heapArray[parent] > bottom) {
+        while (index > 0 && heapArray[parent].distToNode > bottom.distToNode) {
             heapArray[index] = heapArray[parent];
             index = parent;
             parent = (parent - 1) / 2;
@@ -70,8 +65,8 @@ public class MinHeap {
      *
      * @return value that was removed from heap
      */
-    public int remove() {
-        int root = heapArray[0];
+    public HeapNode remove() {
+        HeapNode root = heapArray[0];
         heapArray[0] = heapArray[--currentSize];
         trickleDown(0);
         return root;
@@ -84,20 +79,20 @@ public class MinHeap {
      */
     private void trickleDown(int index) {
         int largerChild;
-        int top = heapArray[index];
+        HeapNode top = heapArray[index];
 
         while (index < currentSize / 2) {
             int leftChild = 2 * index + 1;
             int rightChild = leftChild + 1;
 
             //determine which of the two is the larger child
-            if (rightChild < currentSize && heapArray[leftChild] > heapArray[rightChild]) {
+            if (rightChild < currentSize && heapArray[leftChild].distToNode > heapArray[rightChild].distToNode) {
                 largerChild = rightChild;
             } else {
                 largerChild = leftChild;
             }
 
-            if (top <= heapArray[largerChild]) {
+            if (top.distToNode <= heapArray[largerChild].distToNode) {
                 break;
             }
 
@@ -106,15 +101,5 @@ public class MinHeap {
         }
 
         heapArray[index] = top;
-    }
-
-    /**
-     * Displays first 10 values in the heap
-     */
-    public void displayHeap() {
-        for (int i = 0; i < currentSize; i++) {
-            System.out.print(heapArray[i] + ", ");
-        }
-        System.out.println("...");
     }
 }
